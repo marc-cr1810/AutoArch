@@ -83,7 +83,7 @@ esac
 
 mkdir /mnt/boot
 mkdir /mnt/boot/efi
-mount -t vfat -L EFIBOOT /mnt/boot/
+mount -L EFIBOOT /mnt/boot/
 
 if ! grep -qs '/mnt' /proc/mounts; then
     echo "Drive is not mounted and can not continue"
@@ -97,7 +97,7 @@ echo "--------------------------------------"
 echo "-- Arch Install on Main Drive       --"
 echo "--------------------------------------"
 
-pacstrap /mnt base base-devel linux linux-firmware vim wget sudo --noconfirm --needed
+pacstrap /mnt base base-devel linux linux-firmware --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab
 
 cp -R ${SCRIPT_DIR} /mnt/root/AutoArch
@@ -148,6 +148,9 @@ PKGS=(
     'alacritty'
     'pipewire'
     'brave'
+    'sudo'
+    'nvim'
+    'wget'
 )
 
 for PKG in "${PKGS[@]}"; do
