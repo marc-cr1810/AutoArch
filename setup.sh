@@ -10,10 +10,9 @@ echo -e "  d88P   888 888  888 888   888  888  d88P   888 888    888      888  8
 echo -e " d8888888888 Y88b 888 Y88b. Y88..88P d8888888888 888    Y88b.    888  888 "
 echo -e "d88P     888  \"Y88888  \"Y888 \"Y88P\" d88P     888 888     \"Y8888P 888  888 "
 echo -e ""
-
-echo "-------------------------------------------------"
-echo "       Setup Language to US and set locale       "
-echo "-------------------------------------------------"
+echo --------------------------------------------------------
+echo "         Setup Language to US and set locale          "
+echo --------------------------------------------------------
 
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
@@ -28,8 +27,12 @@ localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
 # Set keymaps
 localectl --no-ask-password set-keymap us
 
+echo "--------------------------------------------------------"
+echo "     Configure Pacman with Multilib and Chaotic AUR     "
+echo "--------------------------------------------------------"
+
 # Add sudo no password rights
-sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
 # Add parallel downloading
 sed -i 's/^#Para/Para/' /etc/pacman.conf
@@ -46,7 +49,9 @@ echo '[chaotic-aur]' >> "/etc/pacman.conf"
 echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> "/etc/pacman.conf"
 pacman -Sy --noconfirm
 
-echo -e "\nInstalling Base System\n"
+echo "--------------------------------------------------------"
+echo "          Installing base system and packages           "
+echo "--------------------------------------------------------"
 
 PKGS=(
     'xorg'
@@ -56,8 +61,26 @@ PKGS=(
     'pipewire'
     'brave'
     'sudo'
-    'nvim'
+    'lunarvim-git'
     'wget'
+    'bpswm'
+    'sxhkd'
+    'fish'
+    'bashtop'
+    'rofi'
+    'dunst'
+    'polybar'
+    'python'
+    'python-pywal'
+    'discord'
+    'spotify'
+    'celluloid'
+    'networkmanager'
+    'networkmanager-demu'
+    'ranger'
+    'neofetch'
+    'thunar'
+    'starship'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -90,4 +113,24 @@ elif lspci | grep -E "Radeon"; then
     pacman -S xf86-video-amdgpu --noconfirm --needed
 elif lspci | grep -E "Integrated Graphics Controller"; then
     pacman -S libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils --needed --noconfirm
+fi
+
+echo -e "\nDone!\n"
+
+echo "--------------------------------------------------------"
+echo "              Setup machine name and user               "
+echo "--------------------------------------------------------"
+if [ $(whoami) = "root"  ];
+then
+    echo -e "Set root password:"
+    passwd
+
+    read -p "Please enter username:" username
+    useradd -m -G wheel -s /bin/bash $username 
+	passwd $username
+
+	read -p "Please name your machine:" nameofmachine
+	echo $nameofmachine > /etc/hostname
+else
+	echo "You are already a user proceed with aur installs"
 fi
