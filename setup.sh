@@ -131,6 +131,4 @@ then
 
 	read -p "Please name your machine:" nameofmachine
 	echo $nameofmachine > /etc/hostname
-else
-	echo "You are already a user proceed with aur installs"
 fi
