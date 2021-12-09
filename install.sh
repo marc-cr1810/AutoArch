@@ -23,6 +23,9 @@ sed -i 's/^#Para/Para/' /etc/pacman.conf
 pacman -S --noconfirm reflector rsync grub
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
+# Clear the screen
+clear
+
 echo -e "       d8888          888                  d8888                 888      "
 echo -e "      d88888          888                 d88888                 888      "
 echo -e "     d88P888          888                d88P888                 888      "
@@ -69,11 +72,11 @@ sgdisk -n 2::-0 --typecode=2:8300 --change-name=2:'ROOT' ${DISK} # partition 2 (
 echo -e "\nCreating Filesystems...\n$HR"
 if [[ ${DISK} =~ "nvme" ]]; then
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}p1"
-mkfs.ext4 "ROOT" "${DISK}p2"
+mkfs.ext4 "${DISK}p2"
 mount "${DISK}p2" /mnt
 else
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}1"
-mkfs.ext4 "ROOT" "${DISK}2"
+mkfs.ext4 "${DISK}2"
 mount "${DISK}2" /mnt
 fi
 ;;
