@@ -53,7 +53,6 @@ sed -i 's/^#Color/Color/' /etc/pacman.conf
 # Enable multilib
 echo -e "\nEnabling multilib"
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
-pacman -Sy --noconfirm
 
 # Setup Chaotic AUR
 echo -e "\nEnabling Chaotic AUR"
@@ -62,6 +61,8 @@ pacman-key --lsign-key FBA220DFC880C036
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 echo '[chaotic-aur]' >> "/etc/pacman.conf"
 echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> "/etc/pacman.conf"
+
+# Re-sync
 pacman -Sy --noconfirm
 
 echo "--------------------------------------------------------"
@@ -188,7 +189,7 @@ echo "                Copy dotfiles to user                   "
 echo "--------------------------------------------------------"
 
 echo -e "\nCopying .config files to user \"${username}\""
-cp -r $SCRIPT_DIR/dotfiles /home/$username/.config
+cp -r $SCRIPT_DIR/dotfiles/* /home/$username/.config/
 
 echo -e "Copying wallpapers"
 cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
