@@ -27,6 +27,6 @@ dunst &
 xsetroot -cursor_name left_ptr &
 
 ######### My Bar ###############
-~/.config/polybar/launch.sh --cuts
-#polybar -r example 2>&1
+#~/.config/polybar/launch.sh --cuts
+polybar -r example 2>&1
 #polybar example -c ~/.config/polybar/config.ini

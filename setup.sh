@@ -8,6 +8,8 @@
 #   d8888888888 Y88b 888 Y88b. Y88..88P d8888888888 888    Y88b.    888  888 
 #  d88P     888  "Y88888  "Y888 "Y88P" d88P     888 888     "Y8888P 888  888 
 
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 # Clear the screen
 clear
 
@@ -23,6 +25,9 @@ echo -e ""
 echo "--------------------------------------------------------"
 echo "          Setup Language to US and set locale           "
 echo "--------------------------------------------------------"
+
+# For testing ## TEMPORARY
+echo -e "${SCRIPT_DIR}"
 
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
@@ -134,13 +139,16 @@ echo -e "\nDone!\n"
 echo "--------------------------------------------------------"
 echo "              Setup machine name and user               "
 echo "--------------------------------------------------------"
+
+usershell=bin/fish
+
 if [ $(whoami) = "root"  ];
 then
     echo -e "Set root password:"
     passwd
 
     read -p "Please enter username: " username
-    useradd -m -G wheel -s /bin/fish $username 
+    useradd -m -G wheel -s $usershell $username 
 	passwd $username
 
 	read -p "Please name your machine: " nameofmachine
@@ -164,6 +172,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "--------------------------------------------------------"
 echo "                Copy dot files to user                  "
 echo "--------------------------------------------------------"
+
 echo -e "\nCopying .config files to user \"${username}\""
 cp -r /root/AutoArch/dotfiles /home/$username/.config/
 
@@ -173,7 +182,10 @@ echo "--------------------------------------------------------"
 
 xinitdir=/home/$username/.xinitrc
 # Copy base xinitrc file
+echo -e "\nCopying /etc/X11/xinit/xinitrc -> ${xinitdir}"
 cp /etc/X11/xinit/xinitrc $xinitdir
+
+echo -e "Modifying xinitrc to use bspwm"
 # Remove last 5 lines
 sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
 # Set startup info
@@ -189,6 +201,16 @@ chown -R $username:$username /home/$username/
 
 echo -e "\nEnabling essential services"
 systemctl enable NetworkManager
+
+echo -e "\nSetting up Polybar config"
+fontdir=/home/$username/.local/share/fonts
+# Just installs the fonts used by my config. Polybar configs were copied earlier
+if [[ -d $fontdir ]]; then
+    cp -rf /root/AutoArch/fonts/* $fontdir
+else
+    mkdir -p $fontdir
+    cp -rf /root/AutoArch/fonts/* $fontdir
+fi
 
 # Finally exit
 exit
