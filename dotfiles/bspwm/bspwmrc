@@ -18,15 +18,11 @@ bspc config normal_border_color "#353b45"
 
 ######### Program settings ################
 bspc rule -a spotify ='^5' 
-bspc rule -a TelegramDesktop desktop='^4'
-bspc rule -a Firefox desktop='^2'
-bspc rule -a Zathura state=tiled 
+bspc rule -a Brave desktop='^2'
 dunst &
 
 ######### Other Settings ################
 xsetroot -cursor_name left_ptr &
 
 ######### My Bar ###############
-#~/.config/polybar/launch.sh --cuts
-polybar -r example 2>&1
-#polybar example -c ~/.config/polybar/config.ini
+~/.config/polybar/launch.sh --cuts

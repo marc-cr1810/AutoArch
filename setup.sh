@@ -166,7 +166,7 @@ grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------------------------"
-echo "                Copy dot files to user                  "
+echo "                Copy dotfiles to user                   "
 echo "--------------------------------------------------------"
 
 echo -e "\nCopying .config files to user \"${username}\""
@@ -174,6 +174,9 @@ cp -r $SCRIPT_DIR/dotfiles /home/$username/.config/
 
 echo -e "Copying wallpapers"
 cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
+
+echo -e "Setting wallpaper"
+/home/$username/.config/polybar/cuts/pywal.sh /home/$username/Wallpaper/UWD/The\ Day\ You\ Left\ -\ Aenami.png
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
