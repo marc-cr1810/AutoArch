@@ -43,8 +43,8 @@ echo "--------------------------------------------------------"
 echo "     Configure Pacman with Multilib and Chaotic AUR     "
 echo "--------------------------------------------------------"
 
-# Add sudo rights
-sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+# Add sudo no password rights
+sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
 # Add parallel downloading and color output with pacman
 sed -i 's/^#Para/Para/' /etc/pacman.conf
@@ -69,7 +69,6 @@ echo "--------------------------------------------------------"
 PKGS=(
     'xorg'
     'xorg-xinit'
-    'picom'
     'alacritty'
     'pipewire'
     'wireplumber'
@@ -103,11 +102,6 @@ PKGS=(
     'numlockx'
 )
 
-AUR_PKGS=(
-    'networkmanager-dmenu'
-    'picom-jonaburg-git'
-)
-
 for PKG in "${PKGS[@]}"; do
     echo "INSTALLING: ${PKG}"
     pacman -S "$PKG" --noconfirm --needed
@@ -138,11 +132,6 @@ elif lspci | grep -E "Integrated Graphics Controller"; then
     pacman -S libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils --needed --noconfirm
 fi
 
-for PKG in "${AUR_PKGS[@]}"; do
-    echo "INSTALLING: ${PKG}"
-    yay -S "$PKG" --noconfirm --needed
-done
-
 echo -e "\nDone!\n"
 
 echo "--------------------------------------------------------"
@@ -163,6 +152,20 @@ then
 	read -p "Please name your machine: " nameofmachine
 	echo $nameofmachine > /etc/hostname
 fi
+
+echo "--------------------------------------------------------"
+echo "                Installing AUR packages                 "
+echo "--------------------------------------------------------"
+
+AUR_PKGS=(
+    'networkmanager-dmenu'
+    'picom-jonaburg-git'
+)
+
+for PKG in "${AUR_PKGS[@]}"; do
+    echo "INSTALLING: ${PKG}"
+    su -c "yay -S --noconfirm ${PKG}" $username
+done
 
 echo "--------------------------------------------------------"
 echo "                    Installing Grub                     "
@@ -229,6 +232,11 @@ else
     mkdir -p $fontdir
     cp -rf $SCRIPT_DIR/fonts/* $fontdir
 fi
+
+# Remove no password sudo rights
+sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+# Add sudo rights
+sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
 # Finally exit
 exit
