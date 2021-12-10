@@ -72,6 +72,8 @@ PKGS=(
     'picom'
     'alacritty'
     'pipewire'
+    'wireplumber'
+    'pipewire-pulse'
     'brave'
     'sudo'
     'lunarvim-git'
@@ -101,9 +103,14 @@ PKGS=(
     'numlockx'
 )
 
+AUR_PKGS=(
+    'networkmanager-dmenu'
+    'picom-jonaburg-git'
+)
+
 for PKG in "${PKGS[@]}"; do
     echo "INSTALLING: ${PKG}"
-    sudo pacman -S "$PKG" --noconfirm --needed
+    pacman -S "$PKG" --noconfirm --needed
 done
 
 # Determine processor type and install microcode
@@ -130,6 +137,11 @@ elif lspci | grep -E "Radeon"; then
 elif lspci | grep -E "Integrated Graphics Controller"; then
     pacman -S libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils --needed --noconfirm
 fi
+
+for PKG in "${AUR_PKGS[@]}"; do
+    echo "INSTALLING: ${PKG}"
+    yay -S "$PKG" --noconfirm --needed
+done
 
 echo -e "\nDone!\n"
 
