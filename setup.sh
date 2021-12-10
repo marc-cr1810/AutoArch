@@ -98,6 +98,7 @@ PKGS=(
     'yay'
     'exa'
     'bat'
+    'numlockx'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -190,9 +191,12 @@ cp /etc/X11/xinit/xinitrc $xinitdir
 echo -e "Modifying xinitrc to use bspwm"
 # Remove last 5 lines
 sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
+
 # Set startup info
-echo 'sxhkd &' >> /home/$username/.xinitrc
-echo 'exec bspwm' >> /home/$username/.xinitrc
+echo 'wal -R &' >> $xinitdir
+echo 'numlockx &' >> $xinitdir
+echo 'picom -f &' >> $xinitdir
+echo 'exec bspwm' >> $xinitdir
 
 echo "--------------------------------------------------------"
 echo "                   Post-install setup                   "
