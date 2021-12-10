@@ -18,9 +18,10 @@ echo "-------------------------------------------------"
 iso=$(curl -4 ifconfig.co/country-iso)
 timedatectl set-ntp true
 
-# enable parallel downloads with pacman
+# enable parallel downloads and color output with pacman
 sed -i 's/^#Para/Para/' /etc/pacman.conf
-pacman -S --noconfirm reflector rsync grub
+sed -i 's/^#Color/Color/' /etc/pacman.conf
+pacman -S --noconfirm reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
 # Clear the screen
@@ -84,10 +85,6 @@ fi
 ;;
 esac
 
-mkdir /mnt/boot
-mkdir /mnt/boot/efi
-mount -L EFIBOOT /mnt/boot/
-
 if ! grep -qs '/mnt' /proc/mounts; then
     echo "Drive is not mounted and can not continue"
     echo "Rebooting in 3 Seconds ..." && sleep 1
@@ -107,3 +104,11 @@ cp -R ${SCRIPT_DIR} /mnt/root/AutoArch
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
 arch-chroot /mnt /root/AutoArch/setup.sh
+
+# Unmount install and reboot into system
+umount -R /mnt
+
+echo "Rebooting in 3 Seconds ..." && sleep 1
+echo "Rebooting in 2 Seconds ..." && sleep 1
+echo "Rebooting in 1 Second ..." && sleep 1
+reboot now

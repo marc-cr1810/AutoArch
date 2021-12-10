@@ -1,3 +1,13 @@
+#!/usr/bin/env bash
+#         d8888          888                  d8888                 888      
+#        d88888          888                 d88888                 888      
+#       d88P888          888                d88P888                 888      
+#      d88P 888 888  888 888888 .d88b.     d88P 888 888d888 .d8888b 88888b.  
+#     d88P  888 888  888 888   d88""88b   d88P  888 888P"  d88P"    888 "88b 
+#    d88P   888 888  888 888   888  888  d88P   888 888    888      888  888 
+#   d8888888888 Y88b 888 Y88b. Y88..88P d8888888888 888    Y88b.    888  888 
+#  d88P     888  "Y88888  "Y888 "Y88P" d88P     888 888     "Y8888P 888  888 
+
 # Clear the screen
 clear
 
@@ -10,9 +20,9 @@ echo -e "  d88P   888 888  888 888   888  888  d88P   888 888    888      888  8
 echo -e " d8888888888 Y88b 888 Y88b. Y88..88P d8888888888 888    Y88b.    888  888 "
 echo -e "d88P     888  \"Y88888  \"Y888 \"Y88P\" d88P     888 888     \"Y8888P 888  888 "
 echo -e ""
-echo --------------------------------------------------------
-echo "         Setup Language to US and set locale          "
-echo --------------------------------------------------------
+echo "--------------------------------------------------------"
+echo "          Setup Language to US and set locale           "
+echo "--------------------------------------------------------"
 
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
@@ -31,11 +41,12 @@ echo "--------------------------------------------------------"
 echo "     Configure Pacman with Multilib and Chaotic AUR     "
 echo "--------------------------------------------------------"
 
-# Add sudo no password rights
+# Add sudo rights
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
-# Add parallel downloading
+# Add parallel downloading and color output with pacman
 sed -i 's/^#Para/Para/' /etc/pacman.conf
+sed -i 's/^#Color/Color/' /etc/pacman.conf
 
 # Enable multilib
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
@@ -44,7 +55,7 @@ pacman -Sy --noconfirm
 # Setup Chaotic AUR
 pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
 pacman-key --lsign-key FBA220DFC880C036
-pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 echo '[chaotic-aur]' >> "/etc/pacman.conf"
 echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> "/etc/pacman.conf"
 pacman -Sy --noconfirm
@@ -81,6 +92,7 @@ PKGS=(
     'neofetch'
     'thunar'
     'starship'
+    'git'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -88,9 +100,7 @@ for PKG in "${PKGS[@]}"; do
     sudo pacman -S "$PKG" --noconfirm --needed
 done
 
-#
-# determine processor type and install microcode
-# 
+# Determine processor type and install microcode
 proc_type=$(lscpu | awk '/Vendor ID:/ {print $3}')
 case "$proc_type" in
 	GenuineIntel)
@@ -125,10 +135,35 @@ then
     echo -e "Set root password:"
     passwd
 
-    read -p "Please enter username:" username
+    read -p "Please enter username: " username
     useradd -m -G wheel -s /bin/bash $username 
 	passwd $username
 
-	read -p "Please name your machine:" nameofmachine
+	read -p "Please name your machine: " nameofmachine
 	echo $nameofmachine > /etc/hostname
 fi
+
+echo "--------------------------------------------------------"
+echo "                    Installing Grub                     "
+echo "--------------------------------------------------------"
+
+mkdir /boot/EFI
+mount -L EFIBOOT /boot/EFI
+
+pacman -S --noconfirm grub
+# For UEFI
+pacman -S --noconfirm efibootmgr dosfstools os-prober mtools
+
+grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
+grub-mkconfig -o /boot/grub/grub.cfg
+
+
+echo "--------------------------------------------------------"
+echo "                   Post-install setup                   "
+echo "--------------------------------------------------------"
+
+echo "Enabling Network Manager"
+systemctl enable NetworkManager
+
+# Finally exit
+exit
