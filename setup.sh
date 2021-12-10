@@ -26,9 +26,6 @@ echo "--------------------------------------------------------"
 echo "          Setup Language to US and set locale           "
 echo "--------------------------------------------------------"
 
-# For testing ## TEMPORARY
-echo -e "${SCRIPT_DIR}"
-
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 
@@ -92,7 +89,6 @@ PKGS=(
     'spotify'
     'celluloid'
     'networkmanager'
-    'networkmanager-demu'
     'ranger'
     'neofetch'
     'thunar'
@@ -140,7 +136,7 @@ echo "--------------------------------------------------------"
 echo "              Setup machine name and user               "
 echo "--------------------------------------------------------"
 
-usershell=bin/fish
+usershell=/bin/fish
 
 if [ $(whoami) = "root"  ];
 then
@@ -174,7 +170,10 @@ echo "                Copy dot files to user                  "
 echo "--------------------------------------------------------"
 
 echo -e "\nCopying .config files to user \"${username}\""
-cp -r /root/AutoArch/dotfiles /home/$username/.config/
+cp -r $SCRIPT_DIR/dotfiles /home/$username/.config/
+
+echo -e "Copying wallpapers"
+cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
@@ -206,10 +205,10 @@ echo -e "\nSetting up Polybar config"
 fontdir=/home/$username/.local/share/fonts
 # Just installs the fonts used by my config. Polybar configs were copied earlier
 if [[ -d $fontdir ]]; then
-    cp -rf /root/AutoArch/fonts/* $fontdir
+    cp -rf $SCRIPT_DIR/fonts/* $fontdir
 else
     mkdir -p $fontdir
-    cp -rf /root/AutoArch/fonts/* $fontdir
+    cp -rf $SCRIPT_DIR/fonts/* $fontdir
 fi
 
 # Finally exit
