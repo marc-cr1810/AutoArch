@@ -167,9 +167,6 @@ echo "--------------------------------------------------------"
 echo -e "\nCopying .config files to user \"${username}\""
 cp -r /root/AutoArch/dotfiles /home/$username/.config/
 
-# Set ownership
-chown -R $username:$username /home/$username/.config/
-
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
 echo "--------------------------------------------------------"
@@ -177,7 +174,7 @@ echo "--------------------------------------------------------"
 # Copy base xinitrc file
 cp /etc/X11/xinit/xinitrc /home/$username/.xinitrc
 # Remove last 5 lines
-sed "$(( $(wc -l </home/$username/.xinitrc)-5+1 )),$ d" /home/$username/.xinitrc 
+sed -i "$(( $(wc -l <'/home/$username/.xinitrc')-5+1 )),$ d" /home/$username/.xinitrc 
 # Set startup info
 echo 'sxhkd &' >> /home/$username/.xinitrc
 echo 'exec bspwm' >> /home/$username/.xinitrc
@@ -185,6 +182,9 @@ echo 'exec bspwm' >> /home/$username/.xinitrc
 echo "--------------------------------------------------------"
 echo "                   Post-install setup                   "
 echo "--------------------------------------------------------"
+
+# Set ownership
+chown -R $username:$username /home/$username/
 
 echo -e "\nEnabling essential services"
 systemctl enable NetworkManager
