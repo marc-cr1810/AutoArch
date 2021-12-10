@@ -74,7 +74,7 @@ PKGS=(
     'sudo'
     'lunarvim-git'
     'wget'
-    'bpswm'
+    'bspwm'
     'sxhkd'
     'fish'
     'bashtop'
