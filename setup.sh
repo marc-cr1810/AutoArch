@@ -174,7 +174,7 @@ echo "--------------------------------------------------------"
 # Copy base xinitrc file
 cp /etc/X11/xinit/xinitrc /home/$username/.xinitrc
 # Remove last 5 lines
-sed -i "$(( $(wc -l <'/home/$username/.xinitrc')-5+1 )),$ d" /home/$username/.xinitrc 
+sed -i "$(( $(wc -l <'/home/${username}/.xinitrc')-5+1 )),$ d" /home/$username/.xinitrc
 # Set startup info
 echo 'sxhkd &' >> /home/$username/.xinitrc
 echo 'exec bspwm' >> /home/$username/.xinitrc
