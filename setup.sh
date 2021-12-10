@@ -199,8 +199,8 @@ cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 # Set ownership
 chown -R $username:$username /home/$username/
 
-echo -e "Setting wallpaper"
-su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
+#echo -e "Setting wallpaper"
+#su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
@@ -245,8 +245,6 @@ sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
 # Ensure ownership is set
 chown -R $username:$username /home/$username/
-
-read
 
 # Finally exit
 exit
