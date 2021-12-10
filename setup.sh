@@ -196,6 +196,9 @@ cp -r $SCRIPT_DIR/dotfiles/* /home/$username/.config/
 echo -e "Copying wallpapers"
 cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 
+# Set ownership
+chown -R $username:$username /home/$username/
+
 echo -e "Setting wallpaper"
 su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
 
@@ -222,9 +225,6 @@ echo "--------------------------------------------------------"
 echo "                   Post-install setup                   "
 echo "--------------------------------------------------------"
 
-# Set ownership
-chown -R $username:$username /home/$username/
-
 echo -e "\nEnabling essential services"
 systemctl enable NetworkManager
 
@@ -243,6 +243,8 @@ sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /et
 # Add sudo rights
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
+# Ensure ownership is set
+chown -R $username:$username /home/$username/
 
 read
 
