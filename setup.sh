@@ -55,7 +55,7 @@ echo -e "\nEnabling multilib"
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
 # Setup Chaotic AUR
-echo -e "\nEnabling Chaotic AUR"
+echo -e "Enabling Chaotic AUR"
 pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
 pacman-key --lsign-key FBA220DFC880C036
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
@@ -163,6 +163,7 @@ echo "--------------------------------------------------------"
 AUR_PKGS=(
     'networkmanager-dmenu'
     'picom-jonaburg-git'
+    'zscroll'
 )
 
 for PKG in "${AUR_PKGS[@]}"; do
@@ -195,7 +196,7 @@ echo -e "Copying wallpapers"
 cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 
 echo -e "Setting wallpaper"
-/home/$username/.config/polybar/cuts/pywal.sh /home/$username/Wallpaper/UWD/The\ Day\ You\ Left\ -\ Aenami.png
+/home/$username/.config/polybar/cuts/scripts/pywal.sh /home/$username/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
