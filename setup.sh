@@ -140,7 +140,7 @@ then
     passwd
 
     read -p "Please enter username: " username
-    useradd -m -G wheel -s /bin/bash $username 
+    useradd -m -G wheel -s /bin/fish $username 
 	passwd $username
 
 	read -p "Please name your machine: " nameofmachine
@@ -171,10 +171,11 @@ echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
 echo "--------------------------------------------------------"
 
+xinitdir=/home/$username/.xinitrc
 # Copy base xinitrc file
-cp /etc/X11/xinit/xinitrc /home/$username/.xinitrc
+cp /etc/X11/xinit/xinitrc $xinitdir
 # Remove last 5 lines
-sed -i "$(( $(wc -l <'/home/${username}/.xinitrc')-5+1 )),$ d" /home/$username/.xinitrc
+sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
 # Set startup info
 echo 'sxhkd &' >> /home/$username/.xinitrc
 echo 'exec bspwm' >> /home/$username/.xinitrc
@@ -188,9 +189,6 @@ chown -R $username:$username /home/$username/
 
 echo -e "\nEnabling essential services"
 systemctl enable NetworkManager
-
-echo -e "Set user shell to fish"
-chsh -s bin/fish $username
 
 # Finally exit
 exit
