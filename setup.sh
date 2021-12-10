@@ -27,8 +27,8 @@ echo "--------------------------------------------------------"
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 
-read -p "Time zone region:" tz_region
-read -p "Time zone city:" tz_city
+read -p "Time zone region: " tz_region
+read -p "Time zone city: " tz_city
 
 timedatectl --no-ask-password set-timezone ${tz_region}/${tz_city}
 timedatectl --no-ask-password set-ntp 1
@@ -93,6 +93,8 @@ PKGS=(
     'thunar'
     'starship'
     'git'
+    'flameshot'
+    'yay'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -157,13 +159,21 @@ pacman -S --noconfirm efibootmgr dosfstools os-prober mtools
 grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
+echo "--------------------------------------------------------"
+echo "                Copy dot files to user                  "
+echo "--------------------------------------------------------"
+
+cp -r /root/AutoArch/dotfiles /home/$username/.config/
 
 echo "--------------------------------------------------------"
 echo "                   Post-install setup                   "
 echo "--------------------------------------------------------"
 
-echo "Enabling Network Manager"
+echo -e "\nEnabling essential services"
 systemctl enable NetworkManager
+
+echo -e "Set user shell to fish"
+chsh -s bin/fish $username
 
 # Finally exit
 exit
