@@ -53,6 +53,8 @@ sed -i 's/^#Color/Color/' /etc/pacman.conf
 # Enable multilib
 echo -e "\nEnabling multilib"
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+# Re-sync
+pacman -Sy --noconfirm
 
 # Setup Chaotic AUR
 echo -e "Enabling Chaotic AUR"
@@ -61,7 +63,6 @@ pacman-key --lsign-key FBA220DFC880C036
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 echo '[chaotic-aur]' >> "/etc/pacman.conf"
 echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> "/etc/pacman.conf"
-
 # Re-sync
 pacman -Sy --noconfirm
 
@@ -196,7 +197,7 @@ echo -e "Copying wallpapers"
 cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 
 echo -e "Setting wallpaper"
-/home/$username/.config/polybar/cuts/scripts/pywal.sh /home/$username/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png
+su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
@@ -214,7 +215,7 @@ sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
 # Set startup info
 echo 'wal -R &' >> $xinitdir
 echo 'numlockx &' >> $xinitdir
-echo 'picom -f &' >> $xinitdir
+echo 'picom -f --experimental-backends &' >> $xinitdir
 echo 'exec bspwm' >> $xinitdir
 
 echo "--------------------------------------------------------"
