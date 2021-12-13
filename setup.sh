@@ -104,6 +104,7 @@ PKGS=(
     'exa'
     'bat'
     'numlockx'
+    'nitrogen'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -199,8 +200,12 @@ cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 # Set ownership
 chown -R $username:$username /home/$username/
 
-#echo -e "Setting wallpaper"
-#su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
+echo -e "Setting theme and wallpaper"
+WALLPAPER_IMG='/home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png'
+# Set polybar color
+su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh ${WALLPAPER_IMG}" $username
+# Set wallpaper
+su -c "nitrogen ${WALLPAPER_IMG}" $username
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
@@ -216,7 +221,7 @@ echo -e "Modifying xinitrc to use bspwm"
 sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
 
 # Set startup info
-echo 'wal -R &' >> $xinitdir
+echo 'nitrogen --restore &' >> $xinitdir
 echo 'numlockx &' >> $xinitdir
 echo 'picom -f --experimental-backends &' >> $xinitdir
 echo 'exec bspwm' >> $xinitdir
