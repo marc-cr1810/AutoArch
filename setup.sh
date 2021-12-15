@@ -104,7 +104,7 @@ PKGS=(
     'exa'
     'bat'
     'numlockx'
-    'nitrogen'
+    'feh'
 )
 
 for PKG in "${PKGS[@]}"; do
@@ -128,12 +128,12 @@ case "$proc_type" in
 esac
 
 # Graphics Drivers find and install
-if lspci | grep -E "NVIDIA|GeForce"; then
+if lspci | grep 'VGA' | grep -E "NVIDIA|GeForce"; then
     pacman -S nvidia --noconfirm --needed
 	nvidia-xconfig
-elif lspci | grep -E "Radeon"; then
+elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
     pacman -S xf86-video-amdgpu --noconfirm --needed
-elif lspci | grep -E "Integrated Graphics Controller"; then
+elif lspci | grep 'VGA' | grep -E "Integrated Graphics Controller"; then
     pacman -S libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils --needed --noconfirm
 fi
 
@@ -201,11 +201,10 @@ cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 chown -R $username:$username /home/$username/
 
 echo -e "Setting theme and wallpaper"
-WALLPAPER_IMG=/home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png
 # Set polybar color
-su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh ${WALLPAPER_IMG}" $username
+su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
 # Set wallpaper
-su -c "nitrogen ${WALLPAPER_IMG}" $username
+su -c "feh --bg-scale /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
@@ -221,7 +220,7 @@ echo -e "Modifying xinitrc to use bspwm"
 sed -i "$(( $(wc -l <$xinitdir)-5+1 )),$ d" $xinitdir
 
 # Set startup info
-echo 'nitrogen --restore &' >> $xinitdir
+echo '~/.fehbg &' >> $xinitdir
 echo 'numlockx &' >> $xinitdir
 echo 'picom -f --experimental-backends &' >> $xinitdir
 echo 'exec bspwm' >> $xinitdir
