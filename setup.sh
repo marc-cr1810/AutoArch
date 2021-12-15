@@ -99,6 +99,7 @@ PKGS=(
     'thunar'
     'starship'
     'git'
+    'github-desktop'
     'flameshot'
     'yay'
     'exa'
@@ -201,10 +202,11 @@ cp -r $SCRIPT_DIR/wallpapers /home/$username/Wallpapers
 chown -R $username:$username /home/$username/
 
 echo -e "Setting theme and wallpaper"
+WALLPAPER_IMG=/home/${username}/Wallpapers/The\ Day\ You\ Left\ -\ Aenami.png
 # Set polybar color
-su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
+su -c "/home/${username}/.config/polybar/cuts/scripts/pywal.sh ${WALLPAPER_IMG}" $username
 # Set wallpaper
-su -c "feh --bg-scale /home/${username}/Wallpaper/The\ Day\ You\ Left\ -\ Aenami.png" $username
+su -c "feh --bg-scale ${WALLPAPER_IMG}" $username
 
 echo "--------------------------------------------------------"
 echo "                Setup xinit with bspwm                  "
